@@ -24,30 +24,30 @@ export const swipeRight = async (req, res) => {
         likedUser.matches.push(currentUser.id);
 
         await Promise.all([await currentUser.save(), await likedUser.save()]);
-      }
 
-      // send notification in real-time with socket.io
-      const connectedUsers = getConnectedUsers();
-      const io = getIO();
+        // send notification in real-time with socket.io
+        const connectedUsers = getConnectedUsers();
+        const io = getIO();
 
-      const likedUserSocketId = connectedUsers.get(likedUserId);
+        const likedUserSocketId = connectedUsers.get(likedUserId);
 
-      if (likedUserSocketId) {
-        io.to(likedUserSocketId).emit("newMatch", {
-          _id: currentUser._id,
-          name: currentUser.name,
-          image: currentUser.image,
-        });
-      }
+        if (likedUserSocketId) {
+          io.to(likedUserSocketId).emit("newMatch", {
+            _id: currentUser._id,
+            name: currentUser.name,
+            image: currentUser.image,
+          });
+        }
 
-      const currentSocketId = connectedUsers.get(currentUser._id.toString());
+        const currentSocketId = connectedUsers.get(currentUser._id.toString());
 
-      if (currentSocketId) {
-        io.to(currentSocketId).emit("newMatch", {
-          _id: likedUser._id,
-          name: likedUser.name,
-          image: likedUser.image,
-        });
+        if (currentSocketId) {
+          io.to(currentSocketId).emit("newMatch", {
+            _id: likedUser._id,
+            name: likedUser.name,
+            image: likedUser.image,
+          });
+        }
       }
     }
     res.status(200).json({

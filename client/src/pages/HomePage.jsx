@@ -13,6 +13,7 @@ const HomePage = () => {
     getUserProfiles,
     userProfiles,
     subscribeToNewMatches,
+    unsubscribeFromNewMatches,
   } = useMatchStore();
 
   const { authUser } = useAuthStore();
@@ -24,10 +25,10 @@ const HomePage = () => {
   useEffect(() => {
     authUser && subscribeToNewMatches();
 
-    // return () => {
-    //   unsubscribeFromNewMatches();
-    // };
-  }, [subscribeToNewMatches, authUser]);
+    return () => {
+      unsubscribeFromNewMatches();
+    };
+  }, [subscribeToNewMatches, unsubscribeFromNewMatches, authUser]);
 
   console.log("User Profiles: ", userProfiles);
   return (
